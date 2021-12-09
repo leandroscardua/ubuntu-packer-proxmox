@@ -1,0 +1,53 @@
+{
+    "variables": {
+      "username": "",
+      "password": ""
+    },
+    "builders": [
+      {
+        "type": "proxmox",
+        "proxmox_url": "",
+        "insecure_skip_tls_verify": true,
+        "username": "{{user `username`}}",
+        "password": "{{user `password`}}",
+  
+        "node": "",
+        "scsi_controller": "virtio-scsi-pci",
+        "os": "l26",
+        "memory": 4096,
+        "cores": 2,
+        "sockets":1,
+        "network_adapters": [
+          {
+            "model": "virtio",
+            "bridge": "vmbr0"
+          }
+        ],
+        "disks": [
+          {
+            "type": "virtio",
+            "disk_size": "32G",
+            "storage_pool": "local-lvm",
+            "storage_pool_type": "lvm"
+          }
+        ],
+        "communicator": "none",
+
+        "iso_url": "https://releases.ubuntu.com/20.04.3/ubuntu-20.04.3-live-server-amd64.iso",
+        "iso_storage_pool": "local",
+        "iso_checksum": "none",
+        "unmount_iso": true,
+        "cloud_init": true,
+        "cloud_init_storage_pool": "local-lvm",
+        "http_directory": "./http",
+        "boot_wait": "2s",
+        "boot_command": [
+          "<enter><enter><f6><esc><wait> ",
+          "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+          "<enter><wait7m>"
+          ],
+        "template_name": "template-ubuntu-2004",
+        "template_description": "Ubuntu 20.04"
+      }
+    ]
+  }
