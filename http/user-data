@@ -23,12 +23,14 @@ autoinstall:
     disable_root: false
     packages:
      - qemu-guest-agent
-     - git
      - cloud-init
     runcmd:
      - systemctl start qemu-guest-agent
+     - 'echo datasource_list: [ NoCloud, ConfigDrive ] > /etc/cloud/cloud.cfg.d/99_pve.cfg'
+     - reboot
   late-commands:
     - sed -i 's/^#*\(send dhcp-client-identifier\).*$/\1 = hardware;/' /target/etc/dhcp/dhclient.conf
     - 'sed -i "s/dhcp4: true/&\n      dhcp-identifier: mac/" /target/etc/netplan/00-installer-config.yaml'
     - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
+    - 'echo datasource_list: [ NoCloud, ConfigDrive ] > /etc/cloud/cloud.cfg.d/99_pve.cfg'
     - poweroff
